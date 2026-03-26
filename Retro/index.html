@@ -149,6 +149,40 @@ a {
   font-weight: 700;
 }
 
+.breadcrumb-bar {
+  border-top: 1px solid rgba(255, 216, 48, 0.08);
+  background: rgba(11, 18, 32, 0.66);
+}
+
+.breadcrumb-inner {
+  width: min(1240px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.breadcrumb {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  font-size: 13px;
+  color: #c9d5ef;
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: "›";
+  margin-left: 8px;
+  color: rgba(255, 216, 48, 0.65);
+}
+
+.breadcrumb li:last-child {
+  color: #ffd830;
+  font-weight: 700;
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1.02fr 1fr;
@@ -864,6 +898,13 @@ a {
         <span class="nav-pill">Binnenkort</span>
       </nav>
     </div>
+    <nav class="breadcrumb-bar" aria-label="Kruimelpad">
+      <div class="breadcrumb-inner">
+        <ol class="breadcrumb">
+          <li aria-current="page">Home</li>
+        </ol>
+      </div>
+    </nav>
   </header>
 
   <main class="container">
