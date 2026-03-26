@@ -480,6 +480,31 @@ a {
     url("./img/pizza-card.png") center/cover no-repeat;
 }
 
+.favorite-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 6px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: #ff4d4f;
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
 .game-visual::after {
   content: "";
   position: absolute;
@@ -967,7 +992,7 @@ a {
         </article>
 
         <article class="game-card" data-style="Gamification" data-focus="Wat kan er beter">
-          <div class="game-visual pizza-game"></div>
+          <div class="game-visual pizza-game"><span class="favorite-badge">Favoriet</span></div>
           <div class="game-copy">
             <div class="game-meta">
               <span class="tag">Gamification</span>
