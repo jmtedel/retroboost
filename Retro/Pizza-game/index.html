@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RetroBoost - Pizza game</title>
+<link rel="icon" type="image/png" href="../img/retroboost-logo-vierkant.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #0b1220;
+  --panel: #f4f1f0;
+  --paper-shadow: rgba(0, 0, 0, 0.16);
+  --text: #171717;
+  --muted: #5d5d5d;
+  --green: #769347;
+  --green-dark: #647d3b;
+  --red: #c70909;
+  --red-dark: #9e0505;
+  --line: rgba(0, 0, 0, 0.24);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #fff;
+  background:
+    radial-gradient(circle at top left, rgba(255, 216, 48, 0.08), transparent 22%),
+    linear-gradient(180deg, #111a2d 0%, #0b1220 100%);
+}
+
+.site-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(18px);
+  background: rgba(11, 18, 32, 0.78);
+  border-bottom: 1px solid rgba(255, 216, 48, 0.08);
+}
+
+.site-topbar-inner,
+.page {
+  width: min(1380px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+
+.site-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand img {
+  width: 72px;
+  height: auto;
+  display: block;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eyebrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #ffd830;
+  text-transform: uppercase;
+}
+
+.brand-copy strong {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.nav-pill {
+  color: #a7aab7;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav-pill.active {
+  color: #ffd830;
+  font-weight: 700;
+}
+
+.page {
+  padding: 36px 0 56px;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 20px;
+  row-gap: 14px;
+  margin-bottom: 24px;
+}
+
+.title-block {
+  grid-column: 1 / -1;
+}
+
+.title-block h1 {
+  margin: 0 0 6px;
+  font-size: clamp(34px, 5vw, 52px);
+}
+
+.title-block p {
+  margin: 0 0 10px;
+  color: #cfd6e7;
+  line-height: 1.65;
+}
+
+.title-block ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #cfd6e7;
+  line-height: 1.7;
+}
+
+.title-block li + li {
+  margin-top: 4px;
+}
+
+.title-divider {
+  margin: 22px 0 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.page-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.page-button.settings {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.page-button.timer {
+  color: #c9d5ef;
+  background: rgba(121, 145, 189, 0.16);
+}
+
+.page-button.reset {
+  background: rgba(121, 145, 189, 0.16);
+  color: #c9d5ef;
+}
+
+.names-panel {
+  display: none;
+  margin-bottom: 28px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.names-panel.show {
+  display: block;
+}
+
+.names-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.names-grid input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 14px;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 520px minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.paper {
+  position: relative;
+  width: 450px;
+  padding: 64px 50px 68px 58px;
+  color: var(--text);
+  background-image: url("./img/div-paper.png");
+  background-position: top center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.paper h2 {
+  margin: 0 0 38px;
+  text-align: center;
+  font-family: 'Chewy', cursive;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.people-list {
+  display: grid;
+  gap: 22px;
+}
+
+.person-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 164px;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.18);
+}
+
+.person-row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.person-name {
+  font-size: 13px;
+  line-height: 1.1;
+}
+
+.compose-button {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: 13px;
+  color: #fff;
+  background: var(--green);
+  cursor: pointer;
+  min-width: 148px;
+  box-shadow: none;
+}
+
+.compose-button:hover {
+  background: var(--green-dark);
+}
+
+.summary-actions {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+.summary-button {
+  appearance: none;
+  border: 1px solid rgb(0 0 0);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 400;
+  color: #000000;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.pizza-stage {
+  position: sticky;
+  top: 24px;
+  min-height: 980px;
+}
+
+.pizza-box {
+  position: relative;
+  width: 100%;
+  min-height: 980px;
+}
+
+.pizza-base {
+  position: absolute;
+  inset: 0;
+  background: url("./img/pizza.png") center right/contain no-repeat;
+}
+
+.pizza-toppings {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pizza-topping {
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.28));
+}
+
+.summary-panel {
+  margin-top: 24px;
+  padding: 20px 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.summary-title {
+  margin: 0 0 14px;
+  color: #fff;
+  font-size: 20px;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.slice-badge {
+  display: grid;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(23, 34, 57, 0.92);
+  border: 1px solid rgba(121, 145, 189, 0.24);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+.slice-badge-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.slice-badge-head strong {
+  flex: 1 1 auto;
+}
+
+.slice-badge-toggle {
+  color: #ffd830;
+  font-size: 22px;
+  line-height: 1;
+  min-width: 14px;
+  text-align: center;
+}
+
+.slice-badge strong {
+  display: block;
+  font-size: 15px;
+}
+
+.slice-badge span {
+  color: #ffd830;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.slice-badge.completed {
+  background: #0b1220;
+  border: none;
+}
+
+.slice-badge-entries {
+  display: grid;
+  gap: 8px;
+}
+
+.slice-badge.collapsed .slice-badge-entries {
+  display: none;
+}
+
+.slice-entry {
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  color: #d7dded;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.slice-entry strong {
+  color: #ffffff;
+}
+
+.slice-entry-vote {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.slice-vote-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(91, 184, 255, 0.18);
+  color: #9fd4ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.slice-vote-count.top-voted {
+  background: #ffd830;
+  color: #1f2a44;
+}
+
+.slice-vote-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.summary-actions-modal {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.summary-export-button {
+  appearance: none;
+  border: 1px solid rgba(255, 216, 48, 0.18);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  color: #ffd830;
+  background: rgba(255, 216, 48, 0.1);
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.58);
+  z-index: 100;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.timer-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 10, 22, 0.58);
+  backdrop-filter: blur(6px);
+  z-index: 110;
+  pointer-events: none;
+}
+
+.timer-modal.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.timer-card {
+  min-width: min(560px, calc(100vw - 40px));
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(17, 26, 45, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.timer-label {
+  margin: 0 0 12px;
+  color: #d7dded;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timer-display {
+  margin: 0 0 22px;
+  color: #ffd830;
+  font-size: clamp(64px, 12vw, 120px);
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timer-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.timer-button.start {
+  color: #1f2a44;
+  background: #ffd830;
+}
+
+.timer-button.pause,
+.timer-button.reset {
+  color: #c9d5ef;
+  background: rgba(121, 145, 189, 0.16);
+}
+
+.setup-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.58);
+  z-index: 120;
+}
+
+.setup-modal.hidden {
+  display: none;
+}
+
+.setup-card {
+  width: min(720px, calc(100vw - 48px));
+  padding: 30px;
+  border-radius: 24px;
+  background: #10192b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.34);
+}
+
+.setup-card h3 {
+  margin: 0 0 10px;
+  font-size: clamp(30px, 4vw, 44px);
+}
+
+.setup-card p {
+  margin: 0 0 18px;
+  color: #cfd6e7;
+  line-height: 1.65;
+}
+
+.setup-controls {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.setup-controls button,
+.setup-card .controls button {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 14px;
+  font: inherit;
+}
+
+.setup-controls button {
+  border-color: rgba(180, 196, 224, 0.18);
+  background: rgba(121, 145, 189, 0.16);
+  color: #c9d5ef;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.setup-card .controls button,
+.setup-controls .primary-setup-button {
+  background: #ffd830;
+  color: #161616;
+  border-color: rgba(255, 216, 48, 0.18);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.participant-row {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.participant-label {
+  color: #cfd6e7;
+  font-size: 14px;
+}
+
+.modal-card {
+  width: min(980px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 28px 32px;
+  border-radius: 22px;
+  background: #111a2d;
+  color: #ffffff;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+.modal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.modal-top h3 {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 30px);
+  color: #ffffff;
+}
+
+.close-button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ingredient-list {
+  display: grid;
+}
+
+.ingredient-row {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  align-items: center;
+  gap: 26px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.ingredient-row img {
+  width: 92px;
+  max-width: 100%;
+  height: auto;
+}
+
+.ingredient-row p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #ffffff;
+}
+
+.ingredient-button {
+  appearance: none;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 20px;
+  min-width: 154px;
+  font: inherit;
+  font-size: 16px;
+  color: #fff;
+  background: var(--red);
+  cursor: pointer;
+}
+
+.ingredient-button:hover {
+  background: var(--red-dark);
+}
+
+.ingredient-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ingredient-count {
+  width: 78px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.answer-preview {
+  margin-top: 8px;
+  color: #d7dded;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.answer-modal-card {
+  width: min(680px, calc(100vw - 48px));
+}
+
+.answer-form {
+  display: grid;
+  gap: 14px;
+}
+
+.answer-form p {
+  margin: 0;
+  color: #d7dded;
+  line-height: 1.55;
+}
+
+.answer-form textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 14px 16px;
+  font: inherit;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.answer-form textarea::placeholder {
+  color: #aeb8d2;
+}
+
+.answer-fields {
+  display: grid;
+  gap: 12px;
+}
+
+.answer-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.answer-save-button {
+  appearance: none;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 22px;
+  font: inherit;
+  font-size: 15px;
+  color: #fff;
+  background: #1f3762;
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 40px;
+  padding: 18px 0 34px;
+  color: #a7aab7;
+  font-size: 14px;
+  background: rgba(11, 18, 32, 0.78);
+  border-top: 1px solid rgba(255, 216, 48, 0.08);
+}
+
+.footer-inner {
+  width: min(1380px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+
+@media (max-width: 1180px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pizza-stage {
+    position: static;
+    min-height: 0;
+  }
+
+  .pizza-box {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .person-row {
+    grid-template-columns: 1fr;
+  }
+
+  .compose-button {
+    width: 100%;
+  }
+
+  .paper {
+    width: 100%;
+    min-height: 0;
+    padding: 72px 42px 56px;
+    background-size: 100% 100%;
+  }
+
+  .paper h2 {
+    font-size: clamp(46px, 11vw, 72px);
+  }
+
+  .people-list {
+    gap: 28px;
+  }
+
+  .ingredient-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .ingredient-button {
+    width: 100%;
+  }
+
+  .modal-card {
+    padding: 24px 20px;
+  }
+}
+</style>
+</head>
+<body>
+  <header class="site-topbar">
+    <div class="site-topbar-inner">
+      <div class="brand">
+        <a href="../index.html">
+          <img src="../img/retroboost-logo-vierkant.png" alt="Retroboost logo" />
+        </a>
+        <div class="brand-copy">
+          <span class="eyebrow">Retro Arcade For Teams</span>
+          <strong>Level up je retrospective</strong>
+        </div>
+      </div>
+
+      <nav class="topnav" aria-label="Hoofdnavigatie">
+        <a class="nav-pill" href="../index.html">Home</a>
+        <a class="nav-pill active" href="../index.html#bibliotheek">Alle formats</a>
+        <span class="nav-pill">Binnenkort</span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="setup-modal" id="setupModal">
+    <div class="setup-card">
+      <h3>Team samenstellen</h3>
+      <p>Vul in wie er meedoen. Voeg eenvoudig deelnemers toe met het plusje en sla daarna het team op.</p>
+
+      <section class="names-panel show" id="namesPanel">
+        <strong>Wie doen er mee?</strong>
+        <div class="names-grid" id="namesGrid"></div>
+        <div class="setup-controls">
+          <button type="button" onclick="addParticipantField()">+ Deelnemer toevoegen</button>
+          <button class="primary-setup-button" type="button" onclick="saveParticipants()">Deelnemers opslaan</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="timer-modal hidden" id="timerModal">
+    <div class="timer-card">
+      <p class="timer-label">Schrijfronde actief</p>
+      <div class="timer-display" id="timerDisplay">05:00</div>
+      <div class="timer-controls">
+        <button class="timer-button start" type="button" onclick="startTimer()">Start</button>
+        <button class="timer-button pause" type="button" onclick="pauseTimer()">Pauze</button>
+        <button class="timer-button reset" type="button" onclick="resetTimer()">Reset</button>
+        <button class="page-button reset" type="button" onclick="toggleTimerModal()">Verberg</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <section class="topbar">
+      <div class="title-block">
+        <h1>Pizza game</h1>
+        <p>Tijdens de timer beantwoorden jullie deze vragen. Per vraag mogen meerdere antwoorden worden toegevoegd, waarna je ze samen kunt invullen en bespreken.</p>
+        <ul>
+          <li>Welke zaken moeten we blijven doen?</li>
+          <li>Welke zaken moeten we meer van doen?</li>
+          <li>Welke zaken moeten we minder van doen?</li>
+          <li>Waarmee moeten we beginnen?</li>
+          <li>Waarmee moeten we stoppen?</li>
+        </ul>
+        <div class="title-divider"></div>
+      </div>
+      <div class="page-actions">
+        <button class="page-button timer" type="button" onclick="toggleTimerModal()">Timer</button>
+        <button class="page-button settings" type="button" onclick="openSetupModal()">Instellingen team</button>
+        <button class="page-button reset" type="button" onclick="resetPizzaGame()">Reset</button>
+      </div>
+    </section>
+
+    <section class="layout">
+      <section>
+        <section class="paper">
+          <h2>TEAM PIZZA</h2>
+          <div class="people-list" id="peopleList"></div>
+          <div class="summary-actions">
+            <button class="summary-button" type="button" onclick="openSummaryModal()">Bekijk overzicht</button>
+          </div>
+        </section>
+      </section>
+
+        <section class="pizza-stage">
+        <div class="pizza-box">
+          <div class="pizza-base"></div>
+          <div class="pizza-toppings" id="pizzaToppings"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">&copy; 2026 RetroBoost</div>
+  </footer>
+
+  <div class="modal hidden" id="pizzaModal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h3 id="modalTitle">Sprint toppings van [naam]</h3>
+        <button class="close-button" type="button" onclick="closePizzaModal()">×</button>
+      </div>
+      <div class="ingredient-list" id="ingredientList"></div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="summaryModal">
+    <div class="modal-card" style="max-width: 760px;">
+      <div class="modal-top">
+        <h3>Overzicht toppings</h3>
+        <button class="close-button" type="button" onclick="closeSummaryModal()">×</button>
+      </div>
+      <section class="summary-panel" style="margin-top: 0;">
+        <div class="summary-grid">
+          <div class="slice-badge" id="badge-keep">
+            <div class="slice-badge-head" onclick="toggleSummaryRow('keep')"><strong>Blijven doen</strong><span>0 ingevuld</span><span class="slice-badge-toggle">-</span></div>
+            <div class="slice-badge-entries"></div>
+          </div>
+          <div class="slice-badge" id="badge-more">
+            <div class="slice-badge-head" onclick="toggleSummaryRow('more')"><strong>Meer doen</strong><span>0 ingevuld</span><span class="slice-badge-toggle">-</span></div>
+            <div class="slice-badge-entries"></div>
+          </div>
+          <div class="slice-badge" id="badge-less">
+            <div class="slice-badge-head" onclick="toggleSummaryRow('less')"><strong>Minder doen</strong><span>0 ingevuld</span><span class="slice-badge-toggle">-</span></div>
+            <div class="slice-badge-entries"></div>
+          </div>
+          <div class="slice-badge" id="badge-start">
+            <div class="slice-badge-head" onclick="toggleSummaryRow('start')"><strong>Beginnen</strong><span>0 ingevuld</span><span class="slice-badge-toggle">-</span></div>
+            <div class="slice-badge-entries"></div>
+          </div>
+          <div class="slice-badge" id="badge-stop">
+            <div class="slice-badge-head" onclick="toggleSummaryRow('stop')"><strong>Stoppen</strong><span>0 ingevuld</span><span class="slice-badge-toggle">-</span></div>
+            <div class="slice-badge-entries"></div>
+          </div>
+        </div>
+        <div class="summary-actions-modal">
+          <button class="summary-export-button" type="button" onclick="exportPizzaSummary()">Export</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="answerModal">
+    <div class="modal-card answer-modal-card">
+      <div class="modal-top">
+        <h3 id="answerModalTitle">Antwoord toevoegen</h3>
+        <button class="close-button" type="button" onclick="closeAnswerModal()">×</button>
+      </div>
+      <form class="answer-form" onsubmit="saveAnswer(event)">
+        <p id="answerModalQuestion"></p>
+        <div class="answer-fields" id="answerFields"></div>
+        <div class="answer-form-actions">
+          <button class="answer-save-button" type="submit">Opslaan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+const STORAGE_KEY = "pizza-game-state";
+const TIMER_SECONDS = 300;
+
+const ingredients = [
+  {
+    id: "keep",
+    image: "./img/paprika.png",
+    question: "Welke zaken moeten we blijven doen?"
+  },
+  {
+    id: "more",
+    image: "./img/ui.png",
+    question: "Welke zaken moeten we meer van doen?"
+  },
+  {
+    id: "less",
+    image: "./img/champ.png",
+    question: "Welke zaken moeten we minder van doen?"
+  },
+  {
+    id: "start",
+    image: "./img/ananas.png",
+    question: "Waarmee moeten we beginnen?"
+  },
+  {
+    id: "stop",
+    image: "./img/salami.png",
+    question: "Waarmee moeten we stoppen?"
+  }
+];
+
+const defaultState = {
+  participants: [""],
+  answers: {},
+  setupCompleted: false
+};
+
+const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || JSON.stringify(defaultState));
+let currentPersonIndex = null;
+let currentIngredientId = null;
+let currentAnswerCount = 0;
+let timerSecondsLeft = TIMER_SECONDS;
+let timerInterval = null;
+let timerModalVisible = false;
+
+if (!state.setupCompleted) {
+  state.participants = [state.participants[0] || ""];
+}
+
+const toppingPositions = {
+  keep: [
+    { top: "24%", left: "53%", rotate: "-10deg" },
+    { top: "38%", left: "66%", rotate: "8deg" },
+    { top: "57%", left: "55%", rotate: "-6deg" },
+    { top: "45%", left: "41%", rotate: "12deg" }
+  ],
+  more: [
+    { top: "29%", left: "63%", rotate: "0deg" },
+    { top: "49%", left: "70%", rotate: "-8deg" },
+    { top: "60%", left: "43%", rotate: "10deg" },
+    { top: "40%", left: "50%", rotate: "-12deg" }
+  ],
+  less: [
+    { top: "34%", left: "47%", rotate: "-6deg" },
+    { top: "54%", left: "61%", rotate: "9deg" },
+    { top: "65%", left: "50%", rotate: "-4deg" },
+    { top: "46%", left: "74%", rotate: "6deg" }
+  ],
+  start: [
+    { top: "28%", left: "73%", rotate: "14deg" },
+    { top: "43%", left: "57%", rotate: "-10deg" },
+    { top: "59%", left: "68%", rotate: "12deg" },
+    { top: "69%", left: "58%", rotate: "-8deg" }
+  ],
+  stop: [
+    { top: "33%", left: "57%", rotate: "7deg" },
+    { top: "52%", left: "48%", rotate: "-7deg" },
+    { top: "63%", left: "74%", rotate: "8deg" },
+    { top: "41%", left: "68%", rotate: "-10deg" }
+  ]
+};
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function formatTime(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function renderTimer() {
+  document.getElementById("timerDisplay").innerText = formatTime(timerSecondsLeft);
+  document.getElementById("timerModal").classList.toggle("hidden", !timerModalVisible);
+}
+
+function startTimer() {
+  if (timerInterval) {
+    return;
+  }
+
+  timerInterval = setInterval(() => {
+    timerSecondsLeft -= 1;
+
+    if (timerSecondsLeft <= 0) {
+      timerSecondsLeft = 0;
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    renderTimer();
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!timerInterval) {
+    return;
+  }
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  timerSecondsLeft = TIMER_SECONDS;
+  renderTimer();
+}
+
+function toggleTimerModal() {
+  timerModalVisible = !timerModalVisible;
+  renderTimer();
+}
+
+function buildNameFields(names = state.participants) {
+  const safeNames = names.length ? names : [""];
+  const namesGrid = document.getElementById("namesGrid");
+  namesGrid.innerHTML = "";
+
+  safeNames.forEach((name, i) => {
+    const row = document.createElement("div");
+    row.className = "participant-row";
+
+    const label = document.createElement("div");
+    label.className = "participant-label";
+    label.innerText = "Naam:";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = `Naam ${i + 1}`;
+    input.value = name || "";
+    input.dataset.index = i;
+    row.appendChild(label);
+    row.appendChild(input);
+    namesGrid.appendChild(row);
+  });
+}
+
+function addParticipantField() {
+  const currentNames = Array.from(document.querySelectorAll("#namesGrid input")).map((input) => input.value);
+  if (currentNames.length >= 12) {
+    return;
+  }
+
+  currentNames.push("");
+  buildNameFields(currentNames);
+}
+
+function saveParticipants() {
+  const inputs = document.querySelectorAll("#namesGrid input");
+  state.participants = Array.from(inputs)
+    .map((input) => input.value.trim())
+    .filter(Boolean);
+
+  if (!state.participants.length) {
+    state.participants = [""];
+  }
+
+  state.setupCompleted = true;
+  saveState();
+  renderPeople();
+  document.getElementById("setupModal").classList.add("hidden");
+}
+
+function renderPeople() {
+  const peopleList = document.getElementById("peopleList");
+  peopleList.innerHTML = "";
+
+  state.participants.forEach((name, index) => {
+    const hasAnswers = getCompletedCountForPerson(name) > 0;
+    const row = document.createElement("div");
+    row.className = "person-row";
+    row.innerHTML = `
+      <div class="person-name">${escapeHtml(name)}</div>
+      <button class="compose-button" type="button" onclick="openPizzaModal(${index})">${hasAnswers ? "Aanpassen" : "Samenstellen"}</button>
+    `;
+    peopleList.appendChild(row);
+  });
+
+  renderPizzaSummary();
+  renderPizzaToppings();
+}
+
+function getCompletedCountForPerson(name) {
+  const personAnswers = state.answers[name] || {};
+  return ingredients.filter((ingredient) => getAnswersForIngredient(name, ingredient.id).length > 0).length;
+}
+
+function renderPizzaSummary() {
+  ingredients.forEach((ingredient) => {
+    const count = state.participants.reduce((total, name) => total + getAnswerEntriesForIngredient(name, ingredient.id).length, 0);
+    const badge = document.getElementById(`badge-${ingredient.id}`);
+    badge.classList.toggle("completed", count > 0);
+    badge.querySelector(".slice-badge-head span").innerText = `${count} ingevuld`;
+
+    const entries = badge.querySelector(".slice-badge-entries");
+    const lines = [];
+    const allAnswers = state.participants.flatMap((name) => getAnswerEntriesForIngredient(name, ingredient.id));
+    const highestVotes = allAnswers.length ? Math.max(...allAnswers.map((answer) => answer.votes || 0)) : 0;
+
+    state.participants.forEach((name) => {
+      const answers = getAnswerEntriesForIngredient(name, ingredient.id);
+      if (!answers.length) {
+        return;
+      }
+
+      answers.forEach((answer) => {
+        const isTopVoted = highestVotes > 0 && (answer.votes || 0) === highestVotes;
+        lines.push(`
+          <div class="slice-entry">
+            <strong>${escapeHtml(name || "Naam")}:</strong> ${escapeHtml(answer.text)}
+            <div class="slice-entry-vote">
+              <span class="slice-vote-count${isTopVoted ? " top-voted" : ""}">Stemmen: ${answer.votes || 0}</span>
+              <button class="slice-vote-button" type="button" onclick="voteForAnswer('${escapeHtml(name || "Naam")}', '${ingredient.id}', '${answer.id}')">+ Stem</button>
+            </div>
+          </div>
+        `);
+      });
+    });
+
+    entries.innerHTML = lines.join("");
+  });
+}
+
+function openPizzaModal(personIndex) {
+  currentPersonIndex = personIndex;
+
+  const personName = state.participants[personIndex];
+  document.getElementById("modalTitle").innerText = `Sprint toppings van ${personName}`;
+
+  const ingredientList = document.getElementById("ingredientList");
+  ingredientList.innerHTML = "";
+
+  ingredients.forEach((ingredient) => {
+    const currentAnswers = getAnswersForIngredient(personName, ingredient.id);
+    const row = document.createElement("div");
+    row.className = "ingredient-row";
+    row.innerHTML = `
+      <img src="${ingredient.image}" alt="${ingredient.question}" />
+      <div>
+        <p>${ingredient.question}</p>
+        ${currentAnswers.length ? `<div class="answer-preview"><strong>${currentAnswers.length} antwoord(en):</strong> ${currentAnswers.map((answer) => escapeHtml(answer)).join(" / ")}</div>` : ""}
+      </div>
+      <div class="ingredient-actions">
+        <input class="ingredient-count" type="number" min="0" max="8" value="${currentAnswers.length || 0}" data-count="${ingredient.id}" />
+        <button class="ingredient-button" type="button" data-open="${ingredient.id}">
+          ${currentAnswers.length ? "Aanpassen" : "Toevoegen"}
+        </button>
+      </div>
+    `;
+    ingredientList.appendChild(row);
+  });
+
+  bindIngredientActions();
+  document.getElementById("pizzaModal").classList.remove("hidden");
+}
+
+function bindIngredientActions() {
+  document.querySelectorAll("[data-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const ingredientId = button.dataset.open;
+      const countInput = document.querySelector(`[data-count="${ingredientId}"]`);
+      currentAnswerCount = Math.max(0, Math.min(8, Number(countInput?.value) || 0));
+      openAnswerModal(ingredientId);
+    });
+  });
+}
+
+function closePizzaModal() {
+  document.getElementById("pizzaModal").classList.add("hidden");
+}
+
+function openAnswerModal(ingredientId) {
+  currentIngredientId = ingredientId;
+  const personName = state.participants[currentPersonIndex];
+  const ingredient = ingredients.find((item) => item.id === ingredientId);
+  const currentAnswers = getAnswersForIngredient(personName, ingredientId);
+
+  document.getElementById("answerModalTitle").innerText = `Antwoord van ${personName}`;
+  document.getElementById("answerModalQuestion").innerText = ingredient.question;
+  syncAnswerFields(currentAnswers.length ? currentAnswers : Array.from({ length: currentAnswerCount }, () => ""));
+  document.getElementById("answerModal").classList.remove("hidden");
+}
+
+function closeAnswerModal() {
+  document.getElementById("answerModal").classList.add("hidden");
+}
+
+function syncAnswerFields(existingValues = null) {
+  const count = Math.max(0, Math.min(8, existingValues?.length ?? currentAnswerCount ?? 0));
+  const fields = document.getElementById("answerFields");
+  const currentValues = existingValues || Array.from(fields.querySelectorAll("textarea")).map((field) => field.value);
+  fields.innerHTML = "";
+
+  for (let i = 0; i < count; i++) {
+    const textarea = document.createElement("textarea");
+    textarea.placeholder = `Schrijf hier antwoord ${i + 1}...`;
+    textarea.value = currentValues[i] || "";
+    fields.appendChild(textarea);
+  }
+}
+
+function saveAnswer(event) {
+  event.preventDefault();
+
+  const personName = state.participants[currentPersonIndex];
+  const previousEntries = getAnswerEntriesForIngredient(personName, currentIngredientId);
+  const values = Array.from(document.querySelectorAll("#answerFields textarea"))
+    .map((field) => field.value.trim())
+    .filter(Boolean);
+
+  state.answers[personName] = state.answers[personName] || {};
+  state.answers[personName][currentIngredientId] = values.map((value, index) => ({
+    id: previousEntries[index]?.id || `answer-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    text: value,
+    votes: typeof previousEntries[index]?.votes === "number" ? previousEntries[index].votes : 0
+  }));
+
+  if (!values.length) {
+    delete state.answers[personName][currentIngredientId];
+  }
+
+  saveState();
+  renderPeople();
+  closeAnswerModal();
+  openPizzaModal(currentPersonIndex);
+}
+
+function openSummaryModal() {
+  document.getElementById("summaryModal").classList.remove("hidden");
+}
+
+function closeSummaryModal() {
+  document.getElementById("summaryModal").classList.add("hidden");
+}
+
+function toggleSummaryRow(ingredientId) {
+  const badge = document.getElementById(`badge-${ingredientId}`);
+  const collapsed = badge.classList.toggle("collapsed");
+  const toggle = badge.querySelector(".slice-badge-toggle");
+  toggle.innerText = collapsed ? "+" : "-";
+}
+
+function exportPizzaSummary() {
+  const lines = ["PIZZA GAME EXPORT", ""];
+
+  ingredients.forEach((ingredient) => {
+    lines.push(ingredient.question.toUpperCase());
+    lines.push("");
+
+    let hasEntries = false;
+
+    state.participants.forEach((personName) => {
+      const answers = getAnswerEntriesForIngredient(personName, ingredient.id);
+      if (!answers.length) {
+        return;
+      }
+
+      hasEntries = true;
+      lines.push(personName || "Naam");
+      answers.forEach((answer, index) => {
+        lines.push(`- ${index + 1}. ${answer.text}`);
+        lines.push(`  Stemmen: ${answer.votes || 0}`);
+      });
+      lines.push("");
+    });
+
+    if (!hasEntries) {
+      lines.push("Geen antwoorden");
+      lines.push("");
+    }
+  });
+
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "pizza-game-export.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function voteForAnswer(personName, ingredientId, answerId) {
+  const entries = normalizeAnswerEntries(personName, ingredientId);
+  const answer = entries.find((entry) => entry.id === answerId);
+
+  if (!answer) {
+    return;
+  }
+
+  answer.votes = (answer.votes || 0) + 1;
+  state.answers[personName] = state.answers[personName] || {};
+  state.answers[personName][ingredientId] = entries;
+  saveState();
+  renderPizzaSummary();
+}
+
+function openSetupModal() {
+  buildNameFields();
+  document.getElementById("setupModal").classList.remove("hidden");
+}
+
+function resetPizzaGame() {
+  state.participants = [...defaultState.participants];
+  state.answers = {};
+  state.setupCompleted = false;
+  saveState();
+  buildNameFields();
+  renderPeople();
+  openSetupModal();
+}
+
+function renderPizzaToppings() {
+  const toppingsLayer = document.getElementById("pizzaToppings");
+  toppingsLayer.innerHTML = "";
+
+  ingredients.forEach((ingredient) => {
+    const count = state.participants.reduce((total, name) => total + getAnswerEntriesForIngredient(name, ingredient.id).length, 0);
+    const positions = toppingPositions[ingredient.id] || [];
+
+    for (let i = 0; i < count; i++) {
+      const position = positions[i % positions.length];
+      const topping = document.createElement("img");
+      topping.className = "pizza-topping";
+      topping.src = ingredient.image;
+      topping.alt = "";
+      topping.style.top = position.top;
+      topping.style.left = position.left;
+      topping.style.transform = `translate(-50%, -50%) rotate(${position.rotate})`;
+      toppingsLayer.appendChild(topping);
+    }
+  });
+}
+
+function getAnswersForIngredient(personName, ingredientId) {
+  return getAnswerEntriesForIngredient(personName, ingredientId).map((entry) => entry.text);
+}
+
+function getAnswerEntriesForIngredient(personName, ingredientId) {
+  const personAnswers = state.answers[personName] || {};
+  const stored = personAnswers[ingredientId];
+
+  if (!Array.isArray(stored)) {
+    if (typeof stored === "string" && stored.trim()) {
+      return [{ id: `legacy-${ingredientId}-0`, text: stored.trim(), votes: 0 }];
+    }
+    return [];
+  }
+
+  return stored
+    .map((entry, index) => {
+      if (typeof entry === "string") {
+        return {
+          id: `legacy-${ingredientId}-${index}`,
+          text: entry.trim(),
+          votes: 0
+        };
+      }
+
+      return {
+        id: entry.id || `answer-${ingredientId}-${index}`,
+        text: String(entry.text || "").trim(),
+        votes: typeof entry.votes === "number" ? entry.votes : 0
+      };
+    })
+    .filter((entry) => entry.text);
+}
+
+function normalizeAnswerEntries(personName, ingredientId) {
+  const personAnswers = state.answers[personName] || {};
+  const entries = getAnswerEntriesForIngredient(personName, ingredientId);
+  state.answers[personName] = personAnswers;
+  state.answers[personName][ingredientId] = entries;
+  return entries;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+buildNameFields();
+renderPeople();
+renderTimer();
+if (state.setupCompleted) {
+  document.getElementById("setupModal").classList.add("hidden");
+}
+</script>
+</body>
+</html>

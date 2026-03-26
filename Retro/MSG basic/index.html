@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RetroBoost - Basic</title>
+<link rel="icon" type="image/png" href="../img/retroboost-logo-vierkant.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #0b1430;
+  --panel: #f4f7fc;
+  --panel-border: #d7e0f2;
+  --text: #1f2a44;
+  --muted: #64708b;
+  --column: #2b72df;
+  --column-dark: #1b56b3;
+  --mad: #ff5a68;
+  --sad: #5bb8ff;
+  --glad: #ffd94f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #fff;
+  background:
+    radial-gradient(circle at top left, rgba(24, 185, 218, 0.08), transparent 24%),
+    radial-gradient(circle at 76% 0%, rgba(255, 216, 48, 0.06), transparent 24%),
+    linear-gradient(180deg, #111a2d 0%, #0b1220 100%);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(18px);
+  background: rgba(11, 18, 32, 0.78);
+  border-bottom: 1px solid rgba(255, 216, 48, 0.08);
+}
+
+.topbar-inner,
+.page {
+  width: min(1240px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand img {
+  width: 72px;
+  height: auto;
+  display: block;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eyebrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #ffd830;
+  text-transform: uppercase;
+}
+
+.brand-copy strong {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.nav-pill {
+  color: #a7aab7;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav-pill.active {
+  color: #ffd830;
+  font-weight: 700;
+}
+
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.timer-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.timer-button.start {
+  color: #1f2a44;
+  background: #ffd830;
+}
+
+.timer-button.pause {
+  color: #c9d5ef;
+  background: rgba(121, 145, 189, 0.16);
+}
+
+.timer-button.reset {
+  color: #c9d5ef;
+  background: rgba(121, 145, 189, 0.16);
+}
+
+.export-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  color: #ffd830;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+}
+
+.reset-button {
+  appearance: none;
+  border: 1px solid rgba(180, 196, 224, 0.18);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  color: #c9d5ef;
+  background: rgba(121, 145, 189, 0.16);
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timer-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 10, 22, 0.58);
+  backdrop-filter: blur(6px);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.timer-modal.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.timer-card {
+  min-width: min(560px, calc(100vw - 40px));
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(17, 26, 45, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
+  text-align: center;
+  pointer-events: auto;
+}
+
+.timer-label {
+  margin: 0 0 12px;
+  color: #d7dded;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.timer-display {
+  margin: 0 0 22px;
+  color: #ffd830;
+  font-size: clamp(64px, 12vw, 120px);
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.page {
+  padding: 48px 0 56px;
+}
+
+.intro {
+  max-width: 760px;
+  margin-bottom: 36px;
+}
+
+.intro h1 {
+  margin: 0 0 12px;
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 0.98;
+}
+
+.intro p {
+  margin: 0;
+  color: #d7dded;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  align-items: start;
+}
+
+.lane {
+  min-width: 0;
+}
+
+.lane-head {
+  margin-bottom: 18px;
+}
+
+.lane-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.lane-title img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.lane-subtitle {
+  margin: 0;
+  color: #d7dded;
+  font-size: 17px;
+}
+
+.lane-body {
+  border-radius: 0;
+  padding: 0;
+}
+
+.lane-panel {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+  padding: 12px;
+  color: var(--text);
+}
+
+.lane-panel-title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.board.vote-mode .composer,
+.board.vote-mode .lane-footer {
+  display: none;
+}
+
+.composer {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.composer input,
+.composer textarea {
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+}
+
+.composer textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.composer button {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font: inherit;
+  font-weight: 700;
+  color: #1f2a44;
+  background: #ffd830;
+  cursor: pointer;
+}
+
+.cards {
+  display: grid;
+  gap: 10px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #dde5f3;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 6px 16px rgba(31, 42, 68, 0.08);
+  position: relative;
+}
+
+.card-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.card-author {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.card-delete {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #9aa6bf;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.card-text {
+  margin: 0;
+  color: #46526b;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.card-vote-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.vote-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 216, 48, 0.18);
+  color: #7d5b00;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.vote-count.top-voted {
+  background: #ffd830;
+  color: #1f2a44;
+  box-shadow: 0 6px 14px rgba(255, 216, 48, 0.28);
+}
+
+.vote-button {
+  appearance: none;
+  border: 1px solid #d8e0f0;
+  background: #eef3fb;
+  color: #325cbf;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.board.write-mode .card-vote-row {
+  display: none;
+}
+
+.empty {
+  padding: 14px 10px 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.lane-footer {
+  margin-top: 10px;
+  color: #eef3ff;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.round-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.round-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px 18px;
+  font: inherit;
+  font-weight: 700;
+  color: #ffd830;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 40px;
+  padding: 18px 0 34px;
+  color: #a7aab7;
+  font-size: 14px;
+  background: rgba(11, 18, 32, 0.78);
+  border-top: 1px solid rgba(255, 216, 48, 0.08);
+}
+
+.footer-inner {
+  width: min(1240px, calc(100vw - 32px));
+  margin: 0 auto;
+}
+
+@media (max-width: 980px) {
+  .board {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <a href="../index.html">
+          <img src="../img/retroboost-logo-vierkant.png" alt="Retroboost logo" />
+        </a>
+        <div class="brand-copy">
+          <span class="eyebrow">Retro Arcade For Teams</span>
+          <strong>Level up je retrospective</strong>
+        </div>
+      </div>
+
+      <nav class="topnav" aria-label="Hoofdnavigatie">
+        <a class="nav-pill" href="../index.html">Home</a>
+        <a class="nav-pill active" href="../index.html#bibliotheek">Alle formats</a>
+        <span class="nav-pill">Binnenkort</span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="timer-modal" id="timerModal">
+    <div class="timer-card">
+      <p class="timer-label">Schrijfronde actief</p>
+      <div class="timer-display" id="timerDisplay">05:00</div>
+      <div class="timer-controls">
+        <button class="timer-button start" type="button" onclick="startTimer()">Start</button>
+        <button class="timer-button pause" type="button" onclick="pauseTimer()">Pauze</button>
+        <button class="timer-button reset" type="button" onclick="resetTimer()">Reset</button>
+        <button class="reset-button" type="button" onclick="toggleTimerModal()">Verberg</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="page">
+    <div class="top-actions">
+      <div class="action-buttons">
+        <button class="timer-button pause" type="button" onclick="toggleTimerModal()">Timer</button>
+        <button class="reset-button" type="button" onclick="resetBoard()">Reset</button>
+        <button class="export-button" type="button" onclick="exportBoard()">Export</button>
+      </div>
+    </div>
+
+    <section class="intro">
+      <h1>MSG Basic</h1>
+      <p>Voeg per kolom kaartjes toe met een naam en een bericht. Zo ontstaat onder elke categorie een duidelijke lijst, net als een simpele retro Trello-opzet voor je retrospective.</p>
+    </section>
+
+    <section class="board write-mode" id="board"></section>
+    <div class="round-actions">
+      <button class="round-button" id="roundButton" type="button" onclick="toggleVoteRound()">Naar stemronde</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">&copy; 2026 RetroBoost</div>
+  </footer>
+
+<script>
+const STORAGE_KEY = "msg-basic-board";
+const TIMER_SECONDS = 300;
+
+const lanes = [
+  {
+    id: "mad",
+    title: "Mad",
+    subtitle: "Wat frustreerde je deze sprint?",
+    icon: "./img/mad.png"
+  },
+  {
+    id: "sad",
+    title: "Sad",
+    subtitle: "Wat vond je jammer of lastig?",
+    icon: "./img/sad.png"
+  },
+  {
+    id: "glad",
+    title: "Glad",
+    subtitle: "Waar werd je blij van?",
+    icon: "./img/glad.png"
+  }
+];
+
+const boardState = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+let timerSecondsLeft = TIMER_SECONDS;
+let timerInterval = null;
+let timerModalVisible = false;
+let voteMode = false;
+
+lanes.forEach((lane) => {
+  boardState[lane.id] = Array.isArray(boardState[lane.id]) ? boardState[lane.id] : [];
+  boardState[lane.id] = boardState[lane.id].map((item, index) => ({
+    id: item.id || `${lane.id}-${index}-${Date.now()}`,
+    author: item.author || "",
+    message: item.message || "",
+    votes: typeof item.votes === "number" ? item.votes : 0
+  }));
+});
+
+function saveBoard() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(boardState));
+}
+
+function formatTime(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function renderTimer() {
+  document.getElementById("timerDisplay").innerText = formatTime(timerSecondsLeft);
+  document.getElementById("timerModal").classList.toggle("hidden", !timerModalVisible);
+}
+
+function startTimer() {
+  if (timerInterval) {
+    return;
+  }
+
+  timerInterval = setInterval(() => {
+    timerSecondsLeft -= 1;
+
+    if (timerSecondsLeft <= 0) {
+      timerSecondsLeft = 0;
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    renderTimer();
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!timerInterval) {
+    return;
+  }
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  timerSecondsLeft = TIMER_SECONDS;
+  renderTimer();
+}
+
+function toggleTimerModal() {
+  timerModalVisible = !timerModalVisible;
+  renderTimer();
+}
+
+function exportBoard() {
+  const lines = ["MSG BASIC EXPORT", ""];
+
+  lanes.forEach((lane) => {
+    lines.push(lane.title.toUpperCase());
+    lines.push("");
+
+    if (!boardState[lane.id].length) {
+      lines.push("Geen kaartjes");
+      lines.push("");
+      return;
+    }
+
+    const highestVotes = Math.max(...boardState[lane.id].map((item) => item.votes || 0));
+    const winners = boardState[lane.id].filter((item) => (item.votes || 0) === highestVotes && highestVotes > 0);
+
+    if (winners.length) {
+      lines.push(`Meeste stemmen: ${highestVotes}`);
+      winners.forEach((item) => {
+        lines.push(`- ${item.author}: ${item.message}`);
+      });
+      lines.push("");
+    }
+
+    boardState[lane.id].forEach((item, index) => {
+      lines.push(`${index + 1}. ${item.author}`);
+      lines.push(`   ${item.message}`);
+      lines.push(`   Stemmen: ${item.votes || 0}`);
+      lines.push("");
+    });
+  });
+
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "msg-basic-export.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function resetBoard() {
+  lanes.forEach((lane) => {
+    boardState[lane.id] = [];
+  });
+
+  saveBoard();
+  renderBoard();
+}
+
+function toggleVoteRound() {
+  voteMode = !voteMode;
+  renderBoard();
+}
+
+function renderBoard() {
+  const board = document.getElementById("board");
+  const roundButton = document.getElementById("roundButton");
+  board.innerHTML = "";
+  board.classList.toggle("vote-mode", voteMode);
+  board.classList.toggle("write-mode", !voteMode);
+  roundButton.innerText = voteMode ? "Terug naar schrijfronde" : "Naar stemronde";
+
+  lanes.forEach((lane) => {
+    const section = document.createElement("section");
+    section.className = "lane";
+    const highestVotes = boardState[lane.id].length
+      ? Math.max(...boardState[lane.id].map((item) => item.votes || 0))
+      : 0;
+    section.innerHTML = `
+      <div class="lane-head">
+        <h2 class="lane-title">
+          <span>${lane.title}</span>
+          <img src="${lane.icon}" alt="${lane.title}" />
+        </h2>
+        <p class="lane-subtitle">${lane.subtitle}</p>
+      </div>
+      <div class="lane-body">
+        <div class="lane-panel">
+          <p class="lane-panel-title">Kaartjes</p>
+          <form class="composer" data-lane="${lane.id}">
+            <input name="author" type="text" placeholder="Naam van developer" required />
+            <textarea name="message" placeholder="Schrijf hier je kaartje..." required></textarea>
+            <button type="submit">+ Voeg kaart toe</button>
+          </form>
+          <div class="cards" data-cards="${lane.id}"></div>
+          <div class="lane-footer">+ Voeg kaart toe</div>
+        </div>
+      </div>
+    `;
+
+    board.appendChild(section);
+
+    const cardsContainer = section.querySelector(`[data-cards="${lane.id}"]`);
+    const items = boardState[lane.id];
+
+    if (!items.length) {
+      cardsContainer.innerHTML = `<div class="empty">Nog geen kaartjes toegevoegd.</div>`;
+      } else {
+      items.forEach((item, index) => {
+        const isTopVoted = highestVotes > 0 && (item.votes || 0) === highestVotes;
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-top">
+            <p class="card-author">${escapeHtml(item.author)}</p>
+            <button class="card-delete" type="button" data-lane="${lane.id}" data-index="${index}" aria-label="Verwijder kaart">×</button>
+          </div>
+          <p class="card-text">${escapeHtml(item.message)}</p>
+          <div class="card-vote-row">
+            <span class="vote-count${isTopVoted ? " top-voted" : ""}">${isTopVoted ? "★ " : ""}Stemmen: ${item.votes}</span>
+            <button class="vote-button" type="button" data-vote-lane="${lane.id}" data-vote-id="${item.id}">
+              + Stem
+            </button>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
+      });
+    }
+  });
+
+  document.querySelectorAll(".composer").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const laneId = form.dataset.lane;
+      const formData = new FormData(form);
+      const author = String(formData.get("author") || "").trim();
+      const message = String(formData.get("message") || "").trim();
+
+      if (!author || !message) {
+        return;
+      }
+
+      boardState[laneId].push({
+        id: `${laneId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        author,
+        message,
+        votes: 0
+      });
+      saveBoard();
+      renderBoard();
+    });
+  });
+
+  document.querySelectorAll(".card-delete").forEach((button) => {
+    button.addEventListener("click", () => {
+      const laneId = button.dataset.lane;
+      const index = Number(button.dataset.index);
+
+      if (Number.isNaN(index)) {
+        return;
+      }
+
+      boardState[laneId].splice(index, 1);
+      saveBoard();
+      renderBoard();
+    });
+  });
+
+  document.querySelectorAll(".vote-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!voteMode) {
+        return;
+      }
+
+      const laneId = button.dataset.voteLane;
+      const voteId = button.dataset.voteId;
+      const item = boardState[laneId].find((entry) => entry.id === voteId);
+
+      if (!item) {
+        return;
+      }
+
+      item.votes += 1;
+      saveBoard();
+      renderBoard();
+    });
+  });
+}
+
+function escapeHtml(value) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+renderBoard();
+renderTimer();
+</script>
+</body>
+</html>

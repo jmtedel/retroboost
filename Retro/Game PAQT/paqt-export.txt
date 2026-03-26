@@ -1,0 +1,75 @@
+WE PAQEN HEM EXPORT
+
+Geexporteerd op: 24-3-2026, 20:52:42
+
+TEAM
+- Mariëtte
+- Ilkan
+- Martijn
+- Robert
+- Thijs
+- Werner
+
+START ANTWOORDEN
+
+Mariëtte
+Progress: 100%
+1. Vraag: Wat neem je mee?
+   Antwoord: sdf
+
+Ilkan
+Progress: 100%
+1. Vraag: Grootste win?
+   Antwoord: sdf
+
+Martijn
+Progress: 100%
+1. Vraag: Welke emoji past bij jouw sprint?
+   Antwoord: sdf
+
+Robert
+Progress: 100%
+1. Vraag: Wat gaf je energie?
+   Antwoord: sdf
+
+Thijs
+Progress: 100%
+1. Vraag: Wat gaf je energie?
+   Antwoord: sdf
+
+Werner
+Progress: 100%
+1. Vraag: Wat neem je mee?
+   Antwoord: sdf
+
+PAQT ANTWOORDEN
+
+Mariëtte
+mad: SKIPPED
+sad: dfsdf
+glad: SKIPPED
+
+Ilkan
+mad: SKIPPED
+sad: SKIPPED
+glad: sdfsdf
+
+Martijn
+mad: SKIPPED
+sad: sdfsdf
+glad: sdfds
+
+Robert
+mad: SKIPPED
+sad: sdfsdf
+glad: sdfsdf
+
+Thijs
+mad: SKIPPED
+sad: sdfds
+glad: sdfsdf
+
+Werner
+mad: SKIPPED
+sad: sdfdsf
+glad: sdfsdf

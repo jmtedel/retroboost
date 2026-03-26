@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<title>We PAQEN hem - Start</title>
+
+<link rel="icon" type="image/png" href="../img/retroboost-logo-vierkant.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.site-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  backdrop-filter: blur(18px);
+  background: rgba(11, 18, 32, 0.78);
+  border-bottom: 1px solid rgba(255, 216, 48, 0.08);
+}
+
+.site-topbar-inner {
+  width: min(1240px, calc(100vw - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.brand img {
+  width: 72px;
+  height: auto;
+  display: block;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.eyebrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #ffd830;
+  text-transform: uppercase;
+}
+
+.brand-copy strong {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.nav-pill {
+  color: #a7aab7;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav-pill.active {
+  color: #ffd830;
+  font-weight: 700;
+}
+
+/* BACKGROUND */
+.bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("Img/background.png");
+  background-size: cover;
+}
+
+.cloud-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.cloud-one {
+  top: 8%;
+  left: -18%;
+  width: 320px;
+  height: 180px;
+  background-image: url("Img/cloud1.png");
+  animation: cloudDriftOne 42s linear infinite;
+}
+
+.cloud-two {
+  top: 18%;
+  left: -22%;
+  width: 280px;
+  height: 160px;
+  background-image: url("Img/cloud2.png");
+  animation: cloudDriftTwo 56s linear infinite;
+}
+
+@keyframes cloudDriftOne {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(140vw);
+  }
+}
+
+@keyframes cloudDriftTwo {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(155vw);
+  }
+}
+
+/* BOARD */
+.board {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+
+  width: 900px;
+  height: 500px;
+
+  background: url("Img/div.png");
+  background-repeat: no-repeat;
+  background-position: center;
+
+  padding: 70px 200px 0px 160px;
+  box-sizing: border-box;
+}
+
+/* TITLE */
+.title {
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: black;
+  font-size: 18px;
+}
+
+/* ROW */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18px 0;
+}
+
+/* LEFT */
+.left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* BAR */
+.bar {
+  width: 140px;
+  height: 12px;
+  background: #f9edd5;
+  border: 2px solid #000;
+  position: relative;
+  border-radius: 10px;
+  margin-left: 10px;
+}
+
+/* ❤️ HEART */
+.heart {
+  position: absolute;
+  left: -15px;
+  top: -10px;
+
+  width: 30px;
+  height: 30px;
+
+  background: url("Img/hart.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  z-index: 2;
+}
+
+/* ❤️ PULSE */
+.heart.full {
+  animation: heartPulse 0.6s ease 4;
+}
+
+@keyframes heartPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px #00ff88);
+  }
+  50% {
+    transform: scale(1.4);
+    filter: drop-shadow(0 0 12px #00ff88);
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px #00ff88);
+  }
+}
+
+/* BAR FILL */
+.bar-fill {
+  height: 100%;
+  width: 0%;
+  background: green;
+  transition: width 0.8s ease-out;
+}
+
+/* NAME */
+.name {
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* BUTTON */
+button {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 10px 16px;
+
+  background: linear-gradient(#ffd84d, #e6b800);
+  border: 3px solid #8c6a00;
+
+  box-shadow:
+    inset -2px -2px 0 #b38f00,
+    inset 2px 2px 0 #fff0a0,
+    3px 3px 0 #5a4300;
+
+  cursor: pointer;
+  border-radius: 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+/* ICON */
+.icon {
+  width: 16px;
+  height: 16px;
+  background: url("Img/energize.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* START */
+.start {
+  position: absolute;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 14px;
+  padding: 20px 40px;
+  color: white;
+
+  background: linear-gradient(#6cc96c, #3e8f3e);
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+    background: #b38058;
+    padding: 30px;
+    border: 5px solid #000000;
+    color: #000000;
+    text-align: center;
+    width: 400px;
+}
+
+input {
+    margin-top: 20px;
+    width: 90%;
+    border-radius: 15px;
+    border: 2px solid #000;
+    padding: 10px;
+}
+
+input#answer {
+    font-family: 'Press Start 2P';
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-topbar">
+  <div class="site-topbar-inner">
+    <div class="brand">
+      <a href="../index.html">
+        <img src="../img/retroboost-logo-vierkant.png" alt="Retroboost logo" />
+      </a>
+      <div class="brand-copy">
+        <span class="eyebrow">Retro Arcade For Teams</span>
+        <strong>Level up je retrospective</strong>
+      </div>
+    </div>
+
+    <nav class="topnav" aria-label="Hoofdnavigatie">
+      <a class="nav-pill" href="../index.html">Home</a>
+      <a class="nav-pill active" href="../index.html#bibliotheek">Alle formats</a>
+      <span class="nav-pill">Binnenkort</span>
+    </nav>
+  </div>
+</header>
+
+<div class="bg"></div>
+<div class="cloud-layer">
+  <div class="cloud cloud-one"></div>
+  <div class="cloud cloud-two"></div>
+</div>
+
+<div class="board">
+  <div class="title">WE PAQEN HEM</div>
+  <div id="list"></div>
+
+  <button class="start" id="startBtn" disabled onclick="startGame()">START</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <p id="question"></p>
+    <input id="answer" placeholder="Typ je antwoord..." />
+    <br><br>
+    <button onclick="submitAnswer()">VERZENDEN</button>
+  </div>
+</div>
+
+<script>
+/* 🔊 SOUNDS */
+const healSound = new Audio("sounds/heal.mp3");
+healSound.volume = 0.5;
+
+const buttonSound = new Audio("sounds/button.mp3");
+buttonSound.volume = 0.5;
+
+const bgMusic = new Audio("sounds/background.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.4;
+
+document.addEventListener("click", () => {
+  bgMusic.play();
+}, { once: true });
+
+setInterval(() => {
+  if (!bgMusic.paused) {
+    localStorage.setItem("musicTime", bgMusic.currentTime);
+    localStorage.setItem("musicPlaying", "true");
+  }
+}, 500);
+
+/* 🔊 button click sound (werkt voor alles) */
+document.addEventListener("click", (e) => {
+  if (e.target.closest("button")) {
+    buttonSound.currentTime = 0;
+    buttonSound.play();
+  }
+});
+
+/* DATA */
+const team = ["Mariëtte","Ilkan","Martijn","Robert","Thijs","Werner"];
+
+const questions = [
+  "Welke emoji past bij jouw sprint?",
+  "Wat gaf je energie?",
+  "Wat neem je mee?",
+  "Hoe voel je je?",
+  "Grootste win?"
+];
+
+const savedProgress = JSON.parse(localStorage.getItem("startProgress") || "{}");
+const savedAnswers = JSON.parse(localStorage.getItem("startAnswers") || "{}");
+
+let progress = {};
+const answers = {};
+let currentPlayer = null;
+
+/* RENDER */
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  team.forEach(name => {
+    progress[name] = typeof progress[name] === "number"
+      ? progress[name]
+      : (typeof savedProgress[name] === "number" ? savedProgress[name] : 0);
+
+    answers[name] = answers[name] || savedAnswers[name] || [];
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    row.innerHTML = `
+      <div class="left">
+        <div class="bar">
+          <div class="heart"></div>
+          <div class="bar-fill" style="width:${progress[name]}%"></div>
+        </div>
+        <div class="name" onclick="speakName('${name}')">${name}</div>
+      </div>
+
+      <button onclick="energize('${name}')">
+        <span class="icon"></span>
+        ENERGIZE
+      </button>
+    `;
+
+    list.appendChild(row);
+  });
+
+  checkStart();
+}
+
+function saveStartData() {
+  localStorage.setItem("startProgress", JSON.stringify(progress));
+  localStorage.setItem("startAnswers", JSON.stringify(answers));
+}
+
+function speakName(name) {
+  if (!("speechSynthesis" in window)) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(name);
+  utterance.lang = "nl-NL";
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+
+  window.speechSynthesis.speak(utterance);
+}
+
+/* MODAL */
+function energize(name) {
+  currentPlayer = name;
+
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("question").innerText =
+    questions[Math.floor(Math.random() * questions.length)];
+
+  document.getElementById("answer").value = "";
+}
+
+/* SUBMIT */
+function submitAnswer() {
+  if (!currentPlayer) return;
+
+  const answerField = document.getElementById("answer");
+  const question = document.getElementById("question").innerText;
+  const answer = answerField.value.trim();
+
+  if (!answer) {
+    answerField.focus();
+    return;
+  }
+
+  const index = team.indexOf(currentPlayer);
+  answers[currentPlayer] = answers[currentPlayer] || [];
+  answers[currentPlayer].push({ question, answer });
+  window.startAnswers = answers;
+
+  document.getElementById("modal").style.display = "none";
+
+  setTimeout(() => {
+    const barFill = document.querySelectorAll(".bar-fill")[index];
+    const heart = document.querySelectorAll(".heart")[index];
+
+    healSound.currentTime = 0;
+    healSound.play();
+
+    barFill.style.width = "0%";
+
+    setTimeout(() => {
+      barFill.style.width = "100%";
+    }, 50);
+
+    heart.classList.add("full");
+
+    setTimeout(() => {
+      heart.classList.remove("full");
+    }, 2400);
+
+    setTimeout(() => {
+      progress[currentPlayer] = 100;
+      saveStartData();
+      render();
+    }, 900);
+
+  }, 150);
+}
+
+/* CHECK */
+function checkStart() {
+  const ready = team.every(n => progress[n] === 100);
+  document.getElementById("startBtn").disabled = !ready;
+}
+
+/* START */
+function startGame() {
+  localStorage.setItem("musicPlaying", "true");
+  localStorage.setItem("musicTime", bgMusic.currentTime);
+  saveStartData();
+  window.location.href = "we-paqen-hem.html";
+}
+
+render();
+window.startAnswers = answers;
+window.startProgress = progress;
+</script>
+
+</body>
+</html>

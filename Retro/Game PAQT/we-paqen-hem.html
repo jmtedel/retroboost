@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<title>We PAQEN hem</title>
+
+<link rel="icon" type="image/png" href="../img/retroboost-logo-vierkant.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: monospace;
+}
+
+.site-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  backdrop-filter: blur(18px);
+  background: rgba(11, 18, 32, 0.78);
+  border-bottom: 1px solid rgba(255, 216, 48, 0.08);
+}
+
+.site-topbar-inner {
+  width: min(1240px, calc(100vw - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
+}
+
+.brand img {
+  width: 72px;
+  height: auto;
+  display: block;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.eyebrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #ffd830;
+  text-transform: uppercase;
+}
+
+.brand-copy strong {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.nav-pill {
+  color: #a7aab7;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.nav-pill.active {
+  color: #ffd830;
+  font-weight: 700;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0,0,0,0.7);
+
+  display: none; /* 👈 start verborgen */
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000; /* 👈 SUPER BELANGRIJK */
+}
+
+.modal-box {
+  background: #222;
+  padding: 30px;
+  border: 4px solid white;
+  color: white;
+  text-align: center;
+  width: 400px;
+}
+
+#victoryModal .modal-box {
+    background: #daa776;
+    border: 5px solid #000000;
+    color: black;
+}
+
+.confetti {
+  position: fixed;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+
+  background: red;
+  z-index: 999;
+
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+#game {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* BACKGROUND */
+.bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("Img/background.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.cloud-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.cloud {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.cloud-one {
+  top: 8%;
+  left: -18%;
+  width: 320px;
+  height: 180px;
+  background-image: url("Img/cloud1.png");
+  animation: cloudDriftOne 42s linear infinite;
+}
+
+.cloud-two {
+  top: 18%;
+  left: -22%;
+  width: 280px;
+  height: 160px;
+  background-image: url("Img/cloud2.png");
+  animation: cloudDriftTwo 56s linear infinite;
+}
+
+@keyframes cloudDriftOne {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(140vw);
+  }
+}
+
+@keyframes cloudDriftTwo {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(155vw);
+  }
+}
+
+/* ❤️ HP BAR */
+.hp-wrapper {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    padding: 5px 20px 5px 20px;
+    border-radius: 30px;
+        box-shadow: inset -2px -2px 0 rgb(0 0 0);
+}
+
+.music-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.audio-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.volume-slider {
+  width: 140px;
+  accent-color: #ffe167;
+  cursor: pointer;
+}
+
+.music-toggle .music-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.music-toggle .music-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+}
+
+.music-toggle.muted .music-icon::after {
+  content: "";
+  position: absolute;
+  width: 42px;
+  height: 4px;
+  background: #cc3d3d;
+  border: 1px solid #000000;
+  transform: rotate(-35deg);
+  box-shadow: 1px 1px 0 #000000;
+}
+
+.heart {
+  width: 40px;
+  height: 40px;
+  background: url("Img/hart.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.hp-container {
+  display: flex;
+  gap: 3px;
+}
+
+.hp-block {
+  width: 14px;
+  height: 24px;
+    border-radius: 5px;
+  background: white;
+}
+
+.hp-block.empty {
+  background: #eee;
+  box-shadow: none;
+  border:none;
+}
+
+/* 👥 PLAYERS */
+.players {
+  position: absolute;
+
+  bottom: 25vh; /* 🔥 schaal mee met scherm */
+
+  left: 35px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.player {
+  width: 185px;
+  height: 185px;
+  margin-left: -88px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  z-index: 1;
+  animation: idlePlayer 1.2s infinite ease-in-out;
+  
+    
+}
+
+/* stacking order */
+.player:nth-child(1) { z-index: 1; }
+.player:nth-child(2) { z-index: 2; }
+.player:nth-child(3) { z-index: 3; }
+.player:nth-child(4) { z-index: 4; }
+.player:nth-child(5) { z-index: 5; }
+.player:nth-child(6) { z-index: 6; }
+}
+
+.player:nth-child(odd) {
+  transform: translateY(10px) scale(0.98);
+}
+
+.player:nth-child(even) {
+  transform: translateY(-5px) scale(1.02);
+}
+
+.player:nth-child(2) { transform: translate(-5px, -15px); }
+.player:nth-child(3) { transform: translate(5px, 15px); }
+
+.player:first-child {
+  margin-left: 0;
+}
+
+.player:nth-child(odd) {
+  transform: translateY(5px);
+}
+
+@keyframes idlePlayer {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.player.active {
+  z-index: 10;
+  filter:
+    drop-shadow(0 0 6px #fff176)
+    drop-shadow(0 0 12px #ffeb3b)
+    drop-shadow(0 0 20px #ffd600);
+  animation: activeBounce 0.6s infinite;
+}
+
+@keyframes activeBounce {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+.player.jump {
+  transform: translateY(-80px) scale(1.1);
+}
+
+/* INDICATOR */
+.indicator {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+  animation: bounce 0.6s infinite;
+  color: white;
+}
+
+@keyframes bounce {
+  0% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -10px); }
+  100% { transform: translate(-50%, 0); }
+}
+
+.checkmarks {
+  position: absolute;
+  top: -92px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  font-size: 24px;
+}
+
+.checkmark {
+  color: #ffffff;
+  opacity: 0.25;
+  text-shadow: 1px 1px 0 #000000;
+}
+
+.checkmark.done {
+  color: #5cff72;
+  opacity: 1;
+  text-shadow: 1px 1px 0 #000000, 0 0 6px rgba(92, 255, 114, 0.7);
+}
+
+/* 👾 BOSS */
+.boss {
+  position: absolute;
+  bottom: 20vh; /* zelfde lijn! */
+  right: 120px;
+  width: 400px;
+  height: 400px;
+  background: url("Img/eindbaas.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: bossIdle 1s infinite alternate;
+}
+
+@keyframes bossIdle {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+.boss.shake {
+  animation: bossShake 0.35s ease-in-out;
+}
+
+@keyframes bossShake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+
+.boss.hit {
+  transform: scale(1.2);
+  filter: brightness(1.5) drop-shadow(0 0 20px red);
+}
+
+.boss-message {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boss-message.show {
+  animation: bossMessagePop 0.9s ease-out forwards;
+}
+
+@keyframes bossMessagePop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -18px);
+  }
+}
+
+/* 💀 BOSS DEATH */
+.boss.dead {
+  animation: bossDeath 0.8s forwards !important;
+}
+
+@keyframes bossDeath {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.2) rotate(5deg); }
+  60% { transform: scale(0.9) rotate(-5deg); }
+  100% {
+    transform: scale(0) rotate(25deg);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* UI */
+.ui {
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.timer-display {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 34px;
+  line-height: 1.2;
+  color: #ffe167;
+  text-align: center;
+  text-shadow: 3px 3px 0 #000000, 0 0 12px rgba(255, 225, 103, 0.35);
+  user-select: none;
+}
+
+.timer-display.running {
+  color: #ffffff;
+  text-shadow: 3px 3px 0 #000000, 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.timer-display.paused {
+  color: #8f8fff;
+  text-shadow: 3px 3px 0 #000000, 0 0 12px rgba(143, 143, 255, 0.4);
+}
+
+.timer-display.finished {
+  color: #ff8f8f;
+  text-shadow: 3px 3px 0 #000000, 0 0 12px rgba(255, 143, 143, 0.45);
+}
+
+.timer-display.warning {
+  color: #ff5c5c;
+  animation: timerBlink 0.7s steps(2, start) infinite;
+  text-shadow: 3px 3px 0 #000000, 0 0 14px rgba(255, 92, 92, 0.55);
+}
+
+@keyframes timerBlink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0.45;
+  }
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.timer-controls button {
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.timer-controls img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+}
+
+.timer-controls button:hover {
+  transform: scale(1.08);
+}
+
+.timer-controls button:active {
+  transform: scale(0.94);
+}
+
+.buttons button[data-type="skip"] {
+  background: linear-gradient(#f3f3f3, #bcbcbc) !important;
+}
+
+.ui .buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.ui .buttons button[data-type="skip"] {
+  flex-basis: 100%;
+  max-width: 180px;
+  margin: 0 auto;
+}
+
+.ui input {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 2px solid #8c6a00;
+  box-shadow: inset -3px -3px 0 #b38f00, inset 3px 3px 0 #fff0a0, 2px 2px 0 #000000;
+  outline: none;
+}
+
+.ui-status {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  line-height: 1.4;
+  color: white;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000000;
+}
+
+button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    padding: 20px 30px;
+    border-radius: 16px;
+    background: linear-gradient(#ffd84d, #e6b800) !important;
+    border: 2px solid #8c6a00;
+    box-shadow: inset -3px -3px 0 #b38f00, inset 3px 3px 0 #fff0a0, 2px 2px 0 #000000;
+    cursor: pointer;
+}
+
+button:hover { transform: translateY(-4px); }
+button:active { transform: translateY(4px); }
+
+button:nth-child(1) { background: linear-gradient(#8fff8f, #3dcc3d); }
+button:nth-child(2) { background: linear-gradient(#ff8f8f, #cc3d3d); }
+button:nth-child(3) { background: linear-gradient(#8f8fff, #3d3dcc); }
+
+</style>
+</head>
+
+<body>
+
+<header class="site-topbar">
+  <div class="site-topbar-inner">
+    <div class="brand">
+      <a href="../index.html">
+        <img src="../img/retroboost-logo-vierkant.png" alt="Retroboost logo" />
+      </a>
+      <div class="brand-copy">
+        <span class="eyebrow">Retro Arcade For Teams</span>
+        <strong>Level up je retrospective</strong>
+      </div>
+    </div>
+
+    <nav class="topnav" aria-label="Hoofdnavigatie">
+      <a class="nav-pill" href="../index.html">Home</a>
+      <a class="nav-pill active" href="../index.html#bibliotheek">Alle formats</a>
+      <span class="nav-pill">Binnenkort</span>
+    </nav>
+  </div>
+</header>
+
+<div id="game">
+  <div class="bg"></div>
+  <div class="cloud-layer">
+    <div class="cloud cloud-one"></div>
+    <div class="cloud cloud-two"></div>
+  </div>
+
+  <div class="audio-controls">
+    <input
+      id="volumeSlider"
+      class="volume-slider"
+      type="range"
+      min="0"
+      max="100"
+      value="20"
+      oninput="setMusicVolume(this.value)"
+      aria-label="Muziek volume"
+    />
+    <button id="musicToggle" class="music-toggle" onclick="toggleMusic()" aria-label="Muziek pauzeren">
+      <span class="music-icon">
+        <img src="Img/sound.png" alt="Geluid" />
+      </span>
+    </button>
+  </div>
+
+  <div class="hp-wrapper">
+    <div class="heart"></div>
+    <div id="hpContainer" class="hp-container"></div>
+  </div>
+
+  <div class="players" id="players"></div>
+  <div id="boss" class="boss">
+    <div id="bossMessage" class="boss-message">No effect</div>
+  </div>
+
+  <div class="ui">
+    <div id="timerDisplay" class="timer-display">START</div>
+    <div class="timer-controls">
+      <button id="timerStartBtn" onclick="startRoundTimer()" aria-label="Start timer">
+        <img src="Img/play.png" alt="Start" />
+      </button>
+      <button id="timerPauseBtn" onclick="pauseRoundTimer()" aria-label="Pauze timer">
+        <img src="Img/pauze.png" alt="Pauze" />
+      </button>
+      <button id="timerResetBtn" onclick="resetRoundTimer()" aria-label="Reset timer">
+        <img src="Img/reset.png" alt="Reset" />
+      </button>
+    </div>
+    <div id="uiStatus" class="ui-status"></div>
+    <input id="answerInput" type="text" placeholder="Typ hier..." />
+    <div class="buttons">
+      <button data-type="glad" onclick="attack('glad')">Glad</button>
+      <button data-type="mad" onclick="attack('mad')">Mad</button>
+      <button data-type="sad" onclick="attack('sad')">Sad</button>
+      <button data-type="skip" onclick="attack('skip')">Skip</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const bgMusic = new Audio("sounds/background.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.2;
+
+// als muziek al speelde → opnieuw starten (maar lijkt door te lopen)
+if (localStorage.getItem("musicPlaying")) {
+  bgMusic.currentTime = localStorage.getItem("musicTime") || 0;
+  bgMusic.play().catch(() => {});
+}
+
+const startSound = new Audio("sounds/start.mp3");
+startSound.volume = 0.7;
+
+// speel meteen bij load
+window.addEventListener("load", () => {
+  startSound.play();
+});
+
+
+function showVictoryModal() {
+  document.getElementById("victoryModal").style.display = "flex";
+}
+
+function restartGame() {
+  localStorage.removeItem("startProgress");
+  localStorage.removeItem("startAnswers");
+  localStorage.removeItem("paqtAnswers");
+  localStorage.removeItem("musicTime");
+  localStorage.removeItem("musicPlaying");
+  window.location.href = "start.html";
+}
+
+function exportData() {
+  const startProgress = JSON.parse(localStorage.getItem("startProgress") || "{}");
+  const startAnswers = JSON.parse(localStorage.getItem("startAnswers") || "{}");
+
+  const lines = [
+    "WE PAQEN HEM EXPORT",
+    "",
+    `Geexporteerd op: ${new Date().toLocaleString("nl-NL")}`,
+    "",
+    "TEAM"
+  ];
+
+  team.forEach(({ name }) => {
+    lines.push(`- ${name}`);
+  });
+
+  lines.push("", "START ANTWOORDEN");
+
+  team.forEach(({ name }) => {
+    lines.push("");
+    lines.push(name);
+    lines.push(`Progress: ${startProgress[name] || 0}%`);
+
+    const playerStartAnswers = startAnswers[name] || [];
+    if (!playerStartAnswers.length) {
+      lines.push("Geen startantwoorden");
+    } else {
+      playerStartAnswers.forEach((entry, index) => {
+        lines.push(`${index + 1}. Vraag: ${entry.question}`);
+        lines.push(`   Antwoord: ${entry.answer}`);
+      });
+    }
+  });
+
+  lines.push("", "PAQT ANTWOORDEN");
+
+  team.forEach(({ name }) => {
+    lines.push("");
+    lines.push(name);
+    lines.push(`mad: ${answers[name]?.mad || ""}`);
+    lines.push(`sad: ${answers[name]?.sad || ""}`);
+    lines.push(`glad: ${answers[name]?.glad || ""}`);
+  });
+
+  const blob = new Blob([lines.join("\n")], {
+    type: "text/plain;charset=utf-8"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "paqt-export.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function spawnConfetti() {
+  const colors = ["#ff4d4d", "#4dff4d", "#4d94ff", "#ffff66", "#ff66cc"];
+
+  for (let i = 0; i < 120; i++) {
+    const conf = document.createElement("div");
+    conf.className = "confetti";
+
+    conf.style.left = Math.random() * 100 + "vw";
+    conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    conf.style.animationDuration = (Math.random() * 2 + 2) + "s";
+    conf.style.opacity = Math.random();
+
+    document.body.appendChild(conf);
+
+    setTimeout(() => conf.remove(), 4000);
+  }
+}
+
+const winSound = new Audio("sounds/win.mp3");
+winSound.volume = 0.7;
+
+const attackSound = new Audio("sounds/attack.mp3");
+attackSound.volume = 0.5;
+
+const madSound = new Audio("sounds/mad.mp3");
+madSound.volume = 0.6;
+
+const beepSound = new Audio("sounds/beep.mp3");
+beepSound.volume = 0.7;
+
+const defeatSound = new Audio("sounds/defeat.mp3");
+defeatSound.volume = 0.6;
+
+const team = [
+  { name: "Mariëtte", img: "Img/ed.png" },
+  { name: "Ilkan", img: "Img/ilkan.png" },
+  { name: "Martijn", img: "Img/martijn.png" },
+  { name: "Robert", img: "Img/robert.png" },
+  { name: "Thijs", img: "Img/thijs.png" },
+  { name: "Werner", img: "Img/werner.png" }
+];
+
+const rounds = ["mad", "sad", "glad"];
+const totalTurns = team.length * rounds.length;
+const answerInput = document.getElementById("answerInput");
+const uiStatus = document.getElementById("uiStatus");
+const bossMessage = document.getElementById("bossMessage");
+const timerDisplay = document.getElementById("timerDisplay");
+const timerStartBtn = document.getElementById("timerStartBtn");
+const timerPauseBtn = document.getElementById("timerPauseBtn");
+const timerResetBtn = document.getElementById("timerResetBtn");
+const musicToggle = document.getElementById("musicToggle");
+const volumeSlider = document.getElementById("volumeSlider");
+const answers = Object.fromEntries(
+  team.map(({ name }) => [name, { mad: "", sad: "", glad: "" }])
+);
+
+window.paqtAnswers = answers;
+
+let currentPlayer = 0;
+let currentRound = 0;
+let bossHP = 100;
+let roundTimerId = null;
+let timeLeft = 180;
+let timerState = "idle";
+let warnedAtOneMinute = false;
+
+function playBeep() {
+  beepSound.currentTime = 0;
+  beepSound.play().catch(() => {});
+}
+
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return `${minutes}:${String(remainder).padStart(2, "0")}`;
+}
+
+function renderTimer() {
+  timerDisplay.classList.remove("running", "paused", "finished", "warning");
+
+  if (timerState === "idle") {
+    timerDisplay.innerText = "START";
+    timerStartBtn.disabled = false;
+    timerPauseBtn.disabled = true;
+    timerResetBtn.disabled = false;
+    return;
+  }
+
+  if (timerState === "running") {
+    timerDisplay.innerText = formatTime(timeLeft);
+    timerDisplay.classList.add(timeLeft <= 30 ? "warning" : "running");
+    timerStartBtn.disabled = true;
+    timerPauseBtn.disabled = false;
+    timerResetBtn.disabled = false;
+    return;
+  }
+
+  if (timerState === "paused") {
+    timerDisplay.innerText = formatTime(timeLeft);
+    timerDisplay.classList.add("paused");
+    timerStartBtn.disabled = false;
+    timerPauseBtn.disabled = true;
+    timerResetBtn.disabled = false;
+    return;
+  }
+
+  timerDisplay.innerText = "OPNIEUW";
+  timerDisplay.classList.add("finished");
+  timerStartBtn.disabled = false;
+  timerPauseBtn.disabled = true;
+  timerResetBtn.disabled = false;
+}
+
+function resetRoundTimer() {
+  if (roundTimerId) {
+    clearInterval(roundTimerId);
+    roundTimerId = null;
+  }
+
+  timeLeft = 180;
+  timerState = "idle";
+  warnedAtOneMinute = false;
+  renderTimer();
+}
+
+function startRoundTimer() {
+  if (timerState === "running") {
+    return;
+  }
+
+  if (roundTimerId) {
+    clearInterval(roundTimerId);
+  }
+
+  if (timerState === "idle" || timerState === "finished") {
+    timeLeft = 180;
+    warnedAtOneMinute = false;
+  }
+
+  timerState = "running";
+  renderTimer();
+
+  roundTimerId = setInterval(() => {
+    timeLeft -= 1;
+
+    if (timeLeft === 60 && !warnedAtOneMinute) {
+      warnedAtOneMinute = true;
+      playBeep();
+    }
+
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      clearInterval(roundTimerId);
+      roundTimerId = null;
+      timerState = "finished";
+      playBeep();
+      renderTimer();
+      return;
+    }
+
+    renderTimer();
+  }, 1000);
+}
+
+function pauseRoundTimer() {
+  if (!roundTimerId) {
+    return;
+  }
+
+  clearInterval(roundTimerId);
+  roundTimerId = null;
+  timerState = "paused";
+  renderTimer();
+}
+
+function updateMusicButton() {
+  const isPaused = bgMusic.paused;
+  musicToggle.classList.toggle("muted", isPaused);
+  musicToggle.setAttribute("aria-label", isPaused ? "Muziek starten" : "Muziek pauzeren");
+}
+
+function setMusicVolume(value) {
+  const normalizedVolume = Number(value) / 100;
+  bgMusic.volume = normalizedVolume;
+  localStorage.setItem("musicVolume", String(normalizedVolume));
+}
+
+function toggleMusic() {
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+    localStorage.setItem("musicPlaying", "true");
+  } else {
+    bgMusic.pause();
+    localStorage.setItem("musicPlaying", "false");
+  }
+
+  updateMusicButton();
+}
+
+function renderPlayers() {
+  const el = document.getElementById("players");
+  el.innerHTML = "";
+
+  team.forEach((p, i) => {
+    const div = document.createElement("div");
+    div.className = "player" + (i === currentPlayer ? " active" : "");
+    div.style.backgroundImage = `url(${p.img})`;
+
+    const checks = document.createElement("div");
+    checks.className = "checkmarks";
+
+    rounds.forEach((round) => {
+      const check = document.createElement("span");
+      check.className = "checkmark" + (answers[p.name][round] ? " done" : "");
+      check.innerText = "✔";
+      checks.appendChild(check);
+    });
+
+    div.appendChild(checks);
+
+    if (i === currentPlayer) {
+      const ind = document.createElement("div");
+      ind.className = "indicator";
+      ind.innerText = "⬇";
+      div.appendChild(ind);
+    }
+
+    el.appendChild(div);
+  });
+}
+
+function updateHP() {
+  const container = document.getElementById("hpContainer");
+  container.innerHTML = "";
+
+  for (let i = 0; i < 20; i++) {
+    const block = document.createElement("div");
+    block.className = "hp-block";
+
+    if (bossHP <= (i / 20) * 100) {
+      block.classList.add("empty");
+    } else {
+      if (bossHP > 70) block.style.background = "#3cbb3c";
+      else if (bossHP > 40) block.style.background = "#ffe167";
+      else if (bossHP > 20) block.style.background = "#cc3d3d";
+      else block.style.background = "red";
+    }
+
+    container.appendChild(block);
+  }
+}
+
+function saveAnswers() {
+  localStorage.setItem("paqtAnswers", JSON.stringify(answers));
+}
+
+function getCompletedTurns() {
+  return team.reduce((count, player) => {
+    return count + rounds.filter((round) => answers[player.name][round]).length;
+  }, 0);
+}
+
+function getBossProgress() {
+  let progress = 0;
+
+  team.forEach((player) => {
+    const sadAnswer = answers[player.name].sad;
+    const gladAnswer = answers[player.name].glad;
+
+    if (sadAnswer && sadAnswer !== "SKIPPED") {
+      progress += 40 / team.length;
+    }
+
+    if (gladAnswer && gladAnswer !== "SKIPPED") {
+      progress += 60 / team.length;
+    }
+  });
+
+  return progress;
+}
+
+function updateTurnUI() {
+  if (currentRound >= rounds.length) {
+    uiStatus.innerText = "Alles ingevuld!";
+    answerInput.disabled = true;
+    document.querySelectorAll(".buttons button").forEach((button) => {
+      button.disabled = true;
+    });
+    return;
+  }
+
+  const currentRoundName = rounds[currentRound];
+  uiStatus.innerText = `${team[currentPlayer].name} - ${currentRoundName.toUpperCase()}`;
+  answerInput.placeholder = `${team[currentPlayer].name}: vul ${currentRoundName} in`;
+  answerInput.value = "";
+  answerInput.disabled = false;
+
+  document.querySelectorAll(".buttons button").forEach((button) => {
+    button.disabled = button.dataset.type !== currentRoundName && button.dataset.type !== "skip";
+  });
+}
+
+function showBossMessage(text) {
+  bossMessage.innerText = text;
+  bossMessage.classList.remove("show");
+  void bossMessage.offsetWidth;
+  bossMessage.classList.add("show");
+}
+
+function attack(type) {
+  if (currentRound >= rounds.length || (type !== rounds[currentRound] && type !== "skip")) {
+    return;
+  }
+
+  const answer = type === "skip" ? "SKIPPED" : answerInput.value.trim();
+  if (!answer) {
+    answerInput.focus();
+    return;
+  }
+
+  const playerEl = document.getElementById("players").children[currentPlayer];
+  const boss = document.getElementById("boss");
+  const playerName = team[currentPlayer].name;
+  const currentRoundName = rounds[currentRound];
+  const isFinalTurn = currentRound === rounds.length - 1 && currentPlayer === team.length - 1;
+
+  if (type === "mad") {
+    madSound.currentTime = 0;
+    madSound.play();
+  } else if (type === "skip") {
+    madSound.currentTime = 0;
+    madSound.play();
+  } else {
+    attackSound.currentTime = 0;
+    attackSound.play();
+  }
+
+  answers[playerName][currentRoundName] = answer;
+  saveAnswers();
+
+  playerEl.classList.add("jump");
+
+  setTimeout(() => {
+    playerEl.classList.remove("jump");
+
+    if (type === "mad") {
+      boss.classList.remove("shake");
+      void boss.offsetWidth;
+      boss.classList.add("shake");
+      setTimeout(() => boss.classList.remove("shake"), 350);
+      showBossMessage("No effect");
+    } else if (type === "skip") {
+      boss.classList.remove("shake");
+      void boss.offsetWidth;
+      boss.classList.add("shake");
+      setTimeout(() => boss.classList.remove("shake"), 350);
+      showBossMessage("No attack");
+    } else {
+      boss.classList.add("hit");
+      setTimeout(() => boss.classList.remove("hit"), 200);
+    }
+
+    const bossProgress = getBossProgress();
+    bossHP = Math.max(0, Math.round(100 - bossProgress));
+
+    if (isFinalTurn) {
+      bossHP = 0;
+      updateHP();
+      boss.style.animation = "none";
+      void boss.offsetWidth;
+      boss.classList.add("dead");
+
+      answerInput.disabled = true;
+      document.querySelectorAll(".ui .buttons button").forEach((button) => {
+        button.disabled = true;
+      });
+
+      defeatSound.currentTime = 0;
+      defeatSound.play();
+
+      setTimeout(() => {
+        winSound.currentTime = 0;
+        winSound.play();
+      }, 1000);
+
+      spawnConfetti();
+
+      setTimeout(() => {
+        showVictoryModal();
+      }, 1600);
+
+      renderPlayers();
+      updateTurnUI();
+      return;
+    }
+
+    updateHP();
+
+    if (currentPlayer === team.length - 1) {
+      currentPlayer = 0;
+      currentRound += 1;
+      if (currentRound < rounds.length) {
+        resetRoundTimer();
+      }
+    } else {
+      currentPlayer += 1;
+    }
+
+    renderPlayers();
+    updateTurnUI();
+
+  }, 200);
+}
+
+renderPlayers();
+updateHP();
+updateTurnUI();
+renderTimer();
+const savedMusicVolume = Number(localStorage.getItem("musicVolume"));
+if (!Number.isNaN(savedMusicVolume) && savedMusicVolume >= 0 && savedMusicVolume <= 1) {
+  bgMusic.volume = savedMusicVolume;
+}
+volumeSlider.value = String(Math.round(bgMusic.volume * 100));
+updateMusicButton();
+
+answerInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && currentRound < rounds.length) {
+    attack(rounds[currentRound]);
+  }
+});
+</script>
+
+<div class="modal" id="victoryModal">
+  <div class="modal-box">
+    <h2> GEPAQT! De eindbaas is verslagen.</h2>
+
+    <button onclick="exportData()">Export</button>
+    <br><br>
+    <button onclick="restartGame()">Opnieuw</button>
+  </div>
+</div>
+
+</body>
+</html>
