@@ -91,6 +91,40 @@ body {
   font-weight: 700;
 }
 
+.breadcrumb-bar {
+  border-top: 1px solid rgba(255, 216, 48, 0.08);
+  background: rgba(11, 18, 32, 0.66);
+}
+
+.breadcrumb-inner {
+  width: min(1240px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.breadcrumb {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  font-size: 13px;
+  color: #c9d5ef;
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: "›";
+  margin-left: 8px;
+  color: rgba(255, 216, 48, 0.65);
+}
+
+.breadcrumb li:last-child {
+  color: #ffd830;
+  font-weight: 700;
+}
+
 /* BACKGROUND */
 .bg {
   position: absolute;
@@ -361,6 +395,15 @@ input#answer {
       <span class="nav-pill">Binnenkort</span>
     </nav>
   </div>
+  <nav class="breadcrumb-bar" aria-label="Kruimelpad">
+    <div class="breadcrumb-inner">
+      <ol class="breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../index.html#bibliotheek">Alle formats</a></li>
+        <li aria-current="page">We PAQEN hem · Start</li>
+      </ol>
+    </div>
+  </nav>
 </header>
 
 <div class="bg"></div>
